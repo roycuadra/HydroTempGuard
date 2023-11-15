@@ -1,14 +1,14 @@
-#define BLYNK_TEMPLATE_ID "TMPL6rlBsbgK2"
-#define BLYNK_TEMPLATE_NAME "Relay Control"
-#define BLYNK_AUTH_TOKEN "_h8LAM84uaeeexl1NEu4CU0knjpG5q0N"
+#define BLYNK_TEMPLATE_ID "TMPL6yQ67QY5g"
+#define BLYNK_TEMPLATE_NAME "Temperature monitoring"
+#define BLYNK_AUTH_TOKEN "wCX3xy5JESJriIrOGzPcA5oD_RX-cmRs"
 
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 
-char ssid[] = "nice"; // Your WiFi network SSID
-char pass[] = "cuadra123"; // Your WiFi network password
+
+const char* ssid = "nice";
+const char* password = "cuadra123";
 
 #define THERMISTOR_PIN A0 // Analog pin to which thermistor is connected
 #define Rref 10000.0 // Reference resistance value of the thermistor
@@ -21,28 +21,37 @@ char pass[] = "cuadra123"; // Your WiFi network password
 #define samplingrate 10 // Number of samples to average
 #define BUZZER_PIN 5 // GPIO pin 5
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // I2C address 0x27, 16 columns and 2 rows
 
-void setup()
-{
+void setup() {
+    Serial.begin(115200);
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(THERMISTOR_PIN, INPUT); // Set thermistor pin as input
+    Blynk.begin(BLYNK_AUTH_TOKEN , ssid, password);
 
-  Serial.begin(9600);
-  pinMode(BUZZER_PIN, OUTPUT);
-  pinMode(THERMISTOR_PIN, INPUT); // Set thermistor pin as input
-  lcd.begin(16, 2); // Initialize the LCD with 16 columns and 2 rows
-  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass); // Use BLYNK_AUTH_TOKEN instead of auth
+  // Connect to Wi-Fi
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
 }
+
+
 
 void loop()
 {
   Blynk.run();
+
   float temp = getTemperature(); // Read temperature from thermistor
   Blynk.virtualWrite(V5, temp); // Send temperature value to Blynk app
 
   
  if (temp >= 30.0) {
     Serial.println("Notification sent!");
-     Blynk.logEvent("temperature__high");
+     Blynk.logEvent("temperature__warning");
   } else {
     Serial.println("Temperature is below 30°C. No notification needed.");
   }
@@ -52,12 +61,6 @@ void loop()
   } else {
     digitalWrite(BUZZER_PIN, LOW); // Turn off the buzzer
   }
-
-  lcd.clear(); // Clear the LCD screen
-  lcd.setCursor(0, 0); // Set cursor to the first column of the first row
-  lcd.print("Temp: "); // Display "Temp: "
-  lcd.print(temp); // Display temperature on the LCD
-  lcd.print(" C"); // Display " C" for Celsius
   delay(1000); // Delay for 1 second before reading temperature again
 }
 
@@ -89,3 +92,4 @@ float getTemperature()
   
   return temperature;
 }
+
