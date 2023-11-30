@@ -1,4 +1,4 @@
-# HydroTempGuard
+# HydroTempGuard 🌱
 
 HydroTempGuard is an ESP8266-based project designed for monitoring water temperature in hydroponic systems, specifically for lettuce plants. The project uses a thermistor to measure water temperature and employs the Blynk app for real-time monitoring. If the water temperature exceeds a specified threshold, the system sends a notification through Blynk and activates a buzzer.
 
@@ -12,5 +12,5 @@ This project is built on the ESP8266 platform and integrates with Blynk for remo
 - Monitor the real-time water temperature for your lettuce plants on the app.
 - If the temperature exceeds the defined threshold, a notification will be sent, and a buzzer will sound.
   
-### Top Contributors
+## Top Contributors
 - roycuadra
