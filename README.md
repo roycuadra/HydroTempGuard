@@ -14,3 +14,6 @@ This project is built on the ESP8266 platform and integrates with Blynk for remo
   
 ## Top Contributors
 - roycuadra
+## License
+
+This project is open-source and available under the MIT License. See the [LICENSE](LICENSE) file for more details.
